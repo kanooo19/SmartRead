@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <rect width="48" height="48" rx="10" fill="#3b82f6"/>
+  <!-- "SR" text mark -->
+  <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle"
+        font-family="-apple-system, sans-serif" font-size="20" font-weight="700"
+        fill="white">SR</text>
+</svg>

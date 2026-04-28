@@ -1,0 +1,179 @@
+/* ── SmartRead: term highlighting ──────────────────────────────────────────── */
+.sr-term {
+  font-weight: 600;
+  border-bottom: 1px dotted rgba(37, 99, 235, 0.4);
+}
+
+/* ── SmartRead: Reading Mode ───────────────────────────────────────────────── */
+
+/* Claude */
+body.sr-reading-mode [data-testid="assistant-message"],
+body.sr-reading-mode .font-claude-message,
+body.sr-reading-mode .prose {
+  line-height: 1.95 !important;
+  font-size: 0.96em !important;
+}
+
+body.sr-reading-mode [data-testid="assistant-message"] p,
+body.sr-reading-mode .prose p {
+  margin-bottom: 1em !important;
+}
+
+body.sr-reading-mode [data-testid="assistant-message"] li,
+body.sr-reading-mode .prose li {
+  margin-bottom: 0.4em !important;
+}
+
+/* Gemini */
+body.sr-reading-mode message-content,
+body.sr-reading-mode .response-content,
+body.sr-reading-mode model-response .markdown {
+  line-height: 1.95 !important;
+  font-size: 0.96em !important;
+}
+
+body.sr-reading-mode model-response p {
+  margin-bottom: 1em !important;
+}
+
+body.sr-reading-mode model-response li {
+  margin-bottom: 0.4em !important;
+}
+
+/* ── SmartRead Block Engine V3 ─────────────────────────────────────────────── */
+
+/* Blocks managed by the engine need relative positioning for the button */
+[data-sr-block] {
+  position: relative !important;
+}
+
+/* ── Smart button ──────────────────────────────────────────────────────────── */
+
+.sr-block-btn {
+  position: absolute;
+  top: 3px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid #E2E8F0;
+  border-radius: 5px;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  color: inherit;
+
+  /* Hidden until hover */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+  z-index: 9999;
+  user-select: none;
+}
+
+/* Show on block hover or keyboard focus */
+[data-sr-block]:hover .sr-block-btn,
+.sr-block-btn:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sr-block-btn:hover {
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.18);
+  border-color: #93C5FD;
+  background: #F8FBFF;
+}
+
+/* Active state: block has been structured */
+.sr-block-btn.sr-active {
+  opacity: 1;
+  pointer-events: auto;
+  background: #EFF6FF;
+  border-color: #93C5FD;
+  color: #2563EB;
+}
+
+/* RTL blocks: button anchors to the left (visual end of Arabic text) */
+[data-sr-block][dir="rtl"] .sr-block-btn {
+  right: auto;
+  left: 6px;
+}
+
+/* ── Structured output ─────────────────────────────────────────────────────── */
+/* All layout uses display:block on <span> — valid inside <p>, <li>, <blockquote> */
+
+.sr-structured {
+  line-height: 1.8;
+}
+
+/* Terms section */
+.sr-terms-section {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.sr-term-card {
+  display: block;
+  margin-bottom: 7px;
+  padding: 5px 10px 5px 12px;
+  background: #F8FAFF;
+  border-left: 2px solid #3B82F6;
+  border-radius: 0 5px 5px 0;
+}
+
+.sr-term-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  direction: ltr;
+}
+
+.sr-pin {
+  font-style: normal;
+  font-size: 11px;
+}
+
+.sr-term-name {
+  font-weight: 700;
+  font-size: 0.88em;
+  color: #1E40AF;
+  letter-spacing: 0.01em;
+}
+
+.sr-term-gloss {
+  display: block;
+  font-size: 0.8em;
+  color: #64748B;
+  margin-top: 3px;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* Divider between terms and body */
+.sr-divider {
+  display: block;
+  height: 1px;
+  background: #E2E8F0;
+  margin: 8px 0;
+}
+
+/* Text body */
+.sr-body {
+  display: block;
+  line-height: 1.85;
+}
+
+/* Individual sentence lines */
+.sr-line {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.sr-line:last-child {
+  margin-bottom: 0;
+}

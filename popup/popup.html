@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartRead</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="brand">
+      <div class="brand-dot" id="statusDot"></div>
+      <span class="brand-name">SmartRead</span>
+    </div>
+    <label class="toggle-switch">
+      <input type="checkbox" id="toggle" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <!-- Active site -->
+  <div class="site-pill">
+    <span class="site-globe">⊙</span>
+    <span id="hostname" class="site-host">Loading...</span>
+  </div>
+
+  <!-- Stats + Fix button -->
+  <div class="card stats-card">
+    <div class="stat-block">
+      <span class="stat-value" id="fixCount">0</span>
+      <span class="stat-label">blocks fixed</span>
+    </div>
+    <button id="fixBtn" class="btn-fix">Fix Page</button>
+  </div>
+
+  <!-- Direction control -->
+  <div class="card">
+    <div class="card-label">Direction</div>
+    <div class="dir-group">
+      <button class="dir-btn active" data-mode="auto">Auto</button>
+      <button class="dir-btn" data-mode="rtl">RTL</button>
+      <button class="dir-btn" data-mode="ltr">LTR</button>
+    </div>
+  </div>
+
+  <!-- Reading Mode -->
+  <div class="card">
+    <div class="card-row">
+      <div class="card-row-text">
+        <div class="card-label">Reading Mode</div>
+        <div class="card-sub">Structured, distraction-free output</div>
+      </div>
+      <label class="mini-toggle">
+        <input type="checkbox" id="readingMode">
+        <span class="mini-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Custom Sites -->
+  <div class="card">
+    <div class="card-label">Custom Sites</div>
+    <ul id="siteList" class="site-list"></ul>
+    <div class="site-input-row">
+      <input id="siteInput" type="text" placeholder="example.com" autocomplete="off" spellcheck="false">
+      <button id="addSiteBtn" class="btn-add" title="Add site">+</button>
+    </div>
+  </div>
+
+  <!-- Signature -->
+  <div class="signature">
+    <span class="sig-product">SmartRead v1.0</span>
+    <span class="sig-dot">·</span>
+    <span class="sig-author">by Kenan ALSIR</span>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
