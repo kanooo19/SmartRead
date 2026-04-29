@@ -1,109 +1,129 @@
-let enabled     = true;
-let fixCount    = 0;
-let readingMode = false;
-let observer    = null;
+// ── State ──────────────────────────────────────────────────────────────────────
+let _enabled     = true;
+let _fixCount    = 0;
+let _readingMode = false;
 
-const SITE_KEY    = `smartread_enabled_${location.hostname}`;
-const DIR_KEY     = `smartread_dir_${location.hostname}`;
-const READING_KEY = `smartread_reading_${location.hostname}`;
+// ── Storage keys ───────────────────────────────────────────────────────────────
+const H         = location.hostname;
+const KEY_ON    = `smartread_enabled_${H}`;
+const KEY_DIR   = `smartread_dir_${H}`;
+const KEY_READ  = `smartread_reading_${H}`;
+const KEY_FONT  = `smartread_font_${H}`;
+const KEY_SIZE  = `smartread_size_${H}`;
 
-// Site-specific selectors for AI tool chat output containers
-const CHAT_SELECTORS = {
-  'claude.ai':          '[data-testid="assistant-message"], .font-claude-message, .prose',
-  'gemini.google.com':  'message-content, .response-content, model-response .markdown'
+// ── Chat container selectors ───────────────────────────────────────────────────
+const CHAT_SEL = {
+  'claude.ai':         '[data-testid="assistant-message"], .font-claude-message, .prose',
+  'gemini.google.com': 'message-content, .response-content, model-response .markdown',
 };
 
-function getChatSelector() {
-  for (const host of Object.keys(CHAT_SELECTORS)) {
-    if (location.hostname.includes(host)) return CHAT_SELECTORS[host];
+function _chatSelector() {
+  for (const [host, sel] of Object.entries(CHAT_SEL)) {
+    if (H.includes(host)) return sel;
   }
   return 'body';
 }
 
-function runFix() {
-  const selector   = getChatSelector();
-  const containers = document.querySelectorAll(selector);
-  const targets    = containers.length ? containers : [document.body];
-  targets.forEach(el => {
-    fixCount += fixSubtree(el);
-    initBlockEngine(el);        // V3: attach ✨ buttons to readable blocks
-  });
-  notifyCount();
+// ── Core operations ────────────────────────────────────────────────────────────
+function _processPage() {
+  setFabState('loading');
+  const containers = document.querySelectorAll(_chatSelector());
+  const targets    = containers.length ? [...containers] : [document.body];
+  _fixCount = 0;
+  targets.forEach(el => { _fixCount += processRoot(el); });
+  setFabState('active');
+  _notify();
 }
 
-function runUnfix() {
-  destroyBlockEngine(document.body);  // V3: restore structured blocks + remove buttons
-  unfixSubtree(document.body);
-  fixCount = 0;
-  notifyCount();
+function _resetPage() {
+  resetRoot(document.body);
+  _fixCount = 0;
+  setFabState('idle');
+  _notify();
 }
 
-function notifyCount() {
-  chrome.runtime.sendMessage({ type: 'FIX_COUNT', count: fixCount, host: location.hostname });
+function _notify() {
+  chrome.runtime.sendMessage({ type: 'FIX_COUNT', count: _fixCount, host: H })
+    .catch(() => {});
 }
 
-function applyReadingMode(active) {
-  readingMode = active;
+function _applyReadingMode(active) {
+  _readingMode = active;
   document.body.classList.toggle('sr-reading-mode', active);
 }
 
-function startObserver() {
-  if (observer) return;
-  observer = new MutationObserver(mutations => {
-    if (!enabled) return;
-    for (const m of mutations) {
-      for (const node of m.addedNodes) {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          fixCount += fixSubtree(node);
-          initBlockEngine(node);    // V3: attach buttons to newly streamed blocks
-        } else if (node.nodeType === Node.TEXT_NODE) {
-          if (fixTextNode(node)) fixCount++;
-        }
-      }
-    }
-    notifyCount();
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
+// ── FAB click handler ──────────────────────────────────────────────────────────
+function _onFabClick() {
+  if (getFabState() === 'active') {
+    _resetPage();
+  } else {
+    _processPage();
+  }
 }
 
-function stopObserver() {
-  if (observer) { observer.disconnect(); observer = null; }
-}
+// ── Initialization ─────────────────────────────────────────────────────────────
+chrome.storage.sync.get([KEY_ON, KEY_DIR, KEY_READ, KEY_FONT, KEY_SIZE], result => {
+  _enabled = result[KEY_ON] !== false;
 
-// Load all persisted state and initialize
-chrome.storage.sync.get([SITE_KEY, DIR_KEY, READING_KEY], result => {
-  enabled = result[SITE_KEY] !== false;
-  setDirMode(result[DIR_KEY] || 'auto');
-  applyReadingMode(result[READING_KEY] === true);
-  if (enabled) { runFix(); startObserver(); }
+  setDirMode(result[KEY_DIR] || 'auto');
+  _applyReadingMode(result[KEY_READ] === true);
+  applyFont(result[KEY_FONT] || 'tajawal');
+  setFontSize(result[KEY_SIZE] || 'medium');
+
+  if (_enabled) {
+    createFab(_onFabClick);
+    initInputEnhancer();
+    startObserver(node => {
+      const n = processRoot(node);
+      if (n > 0) { _fixCount += n; _notify(); }
+    });
+  }
 });
 
-// Listen for messages from popup
+// ── Message listener ───────────────────────────────────────────────────────────
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+
   if (msg.type === 'GET_STATE') {
-    sendResponse({ enabled, fixCount, dirMode: getDirMode(), readingMode });
+    sendResponse({ enabled: _enabled, fixCount: _fixCount, dirMode: getDirMode(), readingMode: _readingMode });
 
   } else if (msg.type === 'SET_ENABLED') {
-    enabled = msg.enabled;
-    chrome.storage.sync.set({ [SITE_KEY]: enabled });
-    if (enabled) { runFix(); startObserver(); }
-    else { stopObserver(); runUnfix(); }
-    sendResponse({ enabled, fixCount });
+    _enabled = msg.enabled;
+    chrome.storage.sync.set({ [KEY_ON]: _enabled });
+    if (_enabled) {
+      createFab(_onFabClick);
+      startObserver(node => { _fixCount += processRoot(node); _notify(); });
+    } else {
+      stopObserver();
+      removeFab();
+      destroyInputEnhancer();
+      _resetPage();
+    }
+    sendResponse({ enabled: _enabled, fixCount: _fixCount });
 
   } else if (msg.type === 'FIX_PAGE') {
-    runFix();
-    sendResponse({ fixCount });
+    _processPage();
+    sendResponse({ fixCount: _fixCount });
 
   } else if (msg.type === 'SET_DIR_MODE') {
     setDirMode(msg.mode);
-    chrome.storage.sync.set({ [DIR_KEY]: msg.mode });
-    runUnfix();
-    runFix();
-    sendResponse({ fixCount });
+    chrome.storage.sync.set({ [KEY_DIR]: msg.mode });
+    _resetPage();
+    _processPage();
+    sendResponse({ fixCount: _fixCount });
 
   } else if (msg.type === 'SET_READING_MODE') {
-    applyReadingMode(msg.active);
-    chrome.storage.sync.set({ [READING_KEY]: msg.active });
+    _applyReadingMode(msg.active);
+    chrome.storage.sync.set({ [KEY_READ]: msg.active });
+    sendResponse({ ok: true });
+
+  } else if (msg.type === 'SET_FONT') {
+    applyFont(msg.font);
+    chrome.storage.sync.set({ [KEY_FONT]: msg.font });
+    sendResponse({ ok: true });
+
+  } else if (msg.type === 'SET_FONT_SIZE') {
+    setFontSize(msg.size);
+    chrome.storage.sync.set({ [KEY_SIZE]: msg.size });
     sendResponse({ ok: true });
   }
 

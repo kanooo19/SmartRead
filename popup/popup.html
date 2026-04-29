@@ -8,72 +8,121 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <div class="header">
-    <div class="brand">
-      <div class="brand-dot" id="statusDot"></div>
-      <span class="brand-name">SmartRead</span>
-    </div>
-    <label class="toggle-switch">
-      <input type="checkbox" id="toggle" checked>
-      <span class="slider"></span>
-    </label>
-  </div>
+  <div class="app">
 
-  <!-- Active site -->
-  <div class="site-pill">
-    <span class="site-globe">⊙</span>
-    <span id="hostname" class="site-host">Loading...</span>
-  </div>
-
-  <!-- Stats + Fix button -->
-  <div class="card stats-card">
-    <div class="stat-block">
-      <span class="stat-value" id="fixCount">0</span>
-      <span class="stat-label">blocks fixed</span>
-    </div>
-    <button id="fixBtn" class="btn-fix">Fix Page</button>
-  </div>
-
-  <!-- Direction control -->
-  <div class="card">
-    <div class="card-label">Direction</div>
-    <div class="dir-group">
-      <button class="dir-btn active" data-mode="auto">Auto</button>
-      <button class="dir-btn" data-mode="rtl">RTL</button>
-      <button class="dir-btn" data-mode="ltr">LTR</button>
-    </div>
-  </div>
-
-  <!-- Reading Mode -->
-  <div class="card">
-    <div class="card-row">
-      <div class="card-row-text">
-        <div class="card-label">Reading Mode</div>
-        <div class="card-sub">Structured, distraction-free output</div>
+    <!-- ── Header ─────────────────────────────────────────── -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <svg class="logo-mark" width="16" height="16" viewBox="0 0 18 18" fill="none">
+            <path d="M9 1L11.2 6.8L17 9L11.2 11.2L9 17L6.8 11.2L1 9L6.8 6.8L9 1Z" fill="currentColor"/>
+          </svg>
+          <span class="logo-text">SmartRead</span>
+        </div>
+        <span class="site-pill" id="sitePill">—</span>
       </div>
-      <label class="mini-toggle">
-        <input type="checkbox" id="readingMode">
-        <span class="mini-slider"></span>
+      <label class="toggle" title="Enable SmartRead on this site">
+        <input type="checkbox" id="enabledToggle" checked>
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
       </label>
-    </div>
-  </div>
+    </header>
 
-  <!-- Custom Sites -->
-  <div class="card">
-    <div class="card-label">Custom Sites</div>
-    <ul id="siteList" class="site-list"></ul>
-    <div class="site-input-row">
-      <input id="siteInput" type="text" placeholder="example.com" autocomplete="off" spellcheck="false">
-      <button id="addSiteBtn" class="btn-add" title="Add site">+</button>
-    </div>
-  </div>
+    <!-- ── Content ────────────────────────────────────────── -->
+    <div class="content" id="mainContent">
 
-  <!-- Signature -->
-  <div class="signature">
-    <span class="sig-product">SmartRead v1.0</span>
-    <span class="sig-dot">·</span>
-    <span class="sig-author">by Kenan ALSIR</span>
+      <!-- Stats -->
+      <div class="stats-card">
+        <div class="stat-body">
+          <span class="stat-value" id="fixCount">0</span>
+          <span class="stat-label">blocks fixed</span>
+        </div>
+        <svg class="stat-deco" width="36" height="36" viewBox="0 0 40 40" fill="none" opacity="0.22">
+          <path d="M20 2L24.5 15.5L38 20L24.5 24.5L20 38L15.5 24.5L2 20L15.5 15.5L20 2Z" fill="white"/>
+        </svg>
+      </div>
+
+      <!-- Fix Page CTA -->
+      <button class="btn-fix" id="btnFix">
+        <span>✨</span>
+        Fix This Page
+      </button>
+
+      <div class="rule"></div>
+
+      <!-- Direction -->
+      <div class="field">
+        <span class="field-label">Direction</span>
+        <div class="seg-group" id="dirGroup">
+          <button class="seg active" data-dir="auto">Auto</button>
+          <button class="seg" data-dir="rtl">RTL</button>
+          <button class="seg" data-dir="ltr">LTR</button>
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <!-- Arabic Font — 10 options -->
+      <div class="field">
+        <span class="field-label">Arabic Font</span>
+        <div class="font-grid" id="fontGrid">
+          <label class="font-opt"><input type="radio" name="font" value="tajawal" checked><span class="font-chip">Tajawal</span></label>
+          <label class="font-opt"><input type="radio" name="font" value="cairo"><span class="font-chip">Cairo</span></label>
+          <label class="font-opt"><input type="radio" name="font" value="almarai"><span class="font-chip">Almarai</span></label>
+          <label class="font-opt"><input type="radio" name="font" value="elmessiri"><span class="font-chip">El Messiri</span></label>
+          <label class="font-opt"><input type="radio" name="font" value="ibm"><span class="font-chip">IBM Plex</span></label>
+          <label class="font-opt"><input type="radio" name="font" value="changa"><span class="font-chip">Changa</span></label>
+          <label class="font-opt"><input type="radio" name="font" value="reemkufi"><span class="font-chip">Reem Kufi</span></label>
+          <label class="font-opt"><input type="radio" name="font" value="naskh"><span class="font-chip">Naskh</span></label>
+          <label class="font-opt"><input type="radio" name="font" value="amiri"><span class="font-chip">Amiri</span></label>
+          <label class="font-opt"><input type="radio" name="font" value="lateef"><span class="font-chip">Lateef</span></label>
+          <label class="font-opt font-opt--system"><input type="radio" name="font" value="system"><span class="font-chip">System</span></label>
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <!-- Font Size -->
+      <div class="field">
+        <span class="field-label">Font Size</span>
+        <div class="seg-group" id="sizeGroup">
+          <button class="seg" data-size="small">S</button>
+          <button class="seg active" data-size="medium">M</button>
+          <button class="seg" data-size="large">L</button>
+          <button class="seg" data-size="xl">XL</button>
+        </div>
+      </div>
+
+      <div class="rule"></div>
+
+      <!-- Reading Mode -->
+      <div class="row-item">
+        <span class="row-label">
+          <span class="row-icon">📖</span>
+          Reading Mode
+        </span>
+        <label class="toggle">
+          <input type="checkbox" id="readingToggle">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        </label>
+      </div>
+
+      <div class="rule"></div>
+
+      <!-- Custom Sites -->
+      <div class="field">
+        <span class="field-label">Custom Sites</span>
+        <div class="input-row">
+          <input type="text" id="siteInput" class="text-input" placeholder="example.com" autocomplete="off" spellcheck="false">
+          <button class="btn-add" id="btnAdd" title="Add site">+</button>
+        </div>
+        <ul class="site-list" id="siteList"></ul>
+      </div>
+
+    </div>
+
+    <!-- ── Footer ──────────────────────────────────────────── -->
+    <footer class="footer">SmartRead v1.2 · by Kenan ALSIR</footer>
+
   </div>
 
   <script src="popup.js"></script>

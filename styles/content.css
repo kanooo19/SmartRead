@@ -1,0 +1,200 @@
+/* ── SmartRead Content Styles v1.2 ─────────────────────────────────────────── */
+
+/* ── CSS Variables ──────────────────────────────────────────────────────────── */
+:root {
+  --smartread-font-size: 16px;
+}
+
+/* ── Floating Action Button ─────────────────────────────────────────────────── */
+#smartread-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 2147483647;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 4px 24px rgba(37, 99, 235, 0.38),
+    0 2px 8px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+  transition:
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.22s ease,
+    background 0.3s ease,
+    opacity 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  line-height: 1;
+  padding: 0;
+  outline: none;
+  animation: sr-fab-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes sr-fab-in {
+  from { transform: scale(0) translateY(20px); opacity: 0; }
+  to   { transform: scale(1) translateY(0);    opacity: 1; }
+}
+
+#smartread-fab:hover {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow:
+    0 8px 32px rgba(37, 99, 235, 0.5),
+    0 4px 14px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+#smartread-fab:active {
+  transform: scale(0.94);
+  transition-duration: 0.08s;
+}
+
+#smartread-fab.sr-fab--active {
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+  box-shadow:
+    0 4px 24px rgba(16, 185, 129, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+#smartread-fab.sr-fab--active:hover {
+  box-shadow:
+    0 8px 32px rgba(16, 185, 129, 0.55),
+    0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+#smartread-fab.sr-fab--loading {
+  background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+  animation: sr-spin 0.9s linear infinite;
+  cursor: default;
+  pointer-events: none;
+}
+
+@keyframes sr-spin {
+  to { transform: rotate(360deg); }
+}
+
+html[dir="rtl"] #smartread-fab,
+body[dir="rtl"] #smartread-fab {
+  right: auto;
+  left: 28px;
+}
+
+/* ── Input Field Smart Button ────────────────────────────────────────────────── */
+#smartread-input-btn {
+  position: fixed;
+  z-index: 2147483646;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #2563EB;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.45), 0 1px 3px rgba(0,0,0,0.12);
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.18s ease, box-shadow 0.18s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  line-height: 1;
+  padding: 0;
+  outline: none;
+  animation: sr-input-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes sr-input-in {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+#smartread-input-btn:hover {
+  transform: scale(1.18);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.55);
+}
+
+#smartread-input-btn:active {
+  transform: scale(0.9);
+  transition-duration: 0.06s;
+}
+
+#smartread-input-btn.sr-input-btn--done {
+  background: #10B981;
+  transform: scale(1.08);
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.5);
+}
+
+/* ── Processed blocks ────────────────────────────────────────────────────────── */
+[data-smartread="block"] {
+  font-size: var(--smartread-font-size);
+  transition: font-size 0.25s ease;
+}
+
+/* ── Arabic text segments ────────────────────────────────────────────────────── */
+.sr-ar {
+  font-variant-ligatures: common-ligatures;
+  font-feature-settings: "calt" 1, "kern" 1;
+}
+
+/* ── Arabic Font System (10 fonts) ───────────────────────────────────────────── */
+/* Applied ONLY to .sr-ar spans — English text is unaffected. */
+
+/* Original 5 */
+body.font-tajawal   .sr-ar { font-family: 'Tajawal', 'Geeza Pro', Arial, sans-serif; }
+body.font-cairo     .sr-ar { font-family: 'Cairo', 'Geeza Pro', Arial, sans-serif; }
+body.font-ibm       .sr-ar { font-family: 'IBM Plex Sans Arabic', 'Geeza Pro', Arial, sans-serif; }
+body.font-naskh     .sr-ar { font-family: 'Noto Naskh Arabic', 'Geeza Pro', serif; }
+body.font-amiri     .sr-ar { font-family: 'Amiri', 'Geeza Pro', serif; }
+
+/* New 5 */
+body.font-almarai   .sr-ar { font-family: 'Almarai', 'Geeza Pro', Arial, sans-serif; }
+body.font-elmessiri .sr-ar { font-family: 'El Messiri', 'Geeza Pro', Arial, sans-serif; }
+body.font-reemkufi  .sr-ar { font-family: 'Reem Kufi', 'Geeza Pro', Arial, sans-serif; }
+body.font-changa    .sr-ar { font-family: 'Changa', 'Geeza Pro', Arial, sans-serif; }
+body.font-lateef    .sr-ar { font-family: 'Lateef', 'Geeza Pro', serif; }
+
+/* Optical size adjustments for specific fonts */
+body.font-naskh     .sr-ar { font-size: 1.08em; line-height: 1.9; }
+body.font-amiri     .sr-ar { font-size: 1.06em; line-height: 1.85; }
+body.font-lateef    .sr-ar { font-size: 1.1em;  line-height: 2.0; }
+body.font-reemkufi  .sr-ar { font-size: 1.04em; }
+
+/* ── Direction ────────────────────────────────────────────────────────────────── */
+[dir="rtl"] { text-align: right; }
+[dir="ltr"] { text-align: left; }
+
+/* ── Reading Mode ─────────────────────────────────────────────────────────────── */
+/* Claude */
+body.sr-reading-mode [data-testid="assistant-message"],
+body.sr-reading-mode .font-claude-message,
+body.sr-reading-mode .prose {
+  line-height: 1.95 !important;
+  font-size: 0.97em !important;
+  letter-spacing: 0.005em !important;
+}
+
+body.sr-reading-mode [data-testid="assistant-message"] p,
+body.sr-reading-mode .prose p { margin-bottom: 1.1em !important; }
+
+body.sr-reading-mode [data-testid="assistant-message"] li,
+body.sr-reading-mode .prose li { margin-bottom: 0.5em !important; }
+
+/* Gemini */
+body.sr-reading-mode message-content,
+body.sr-reading-mode .response-content,
+body.sr-reading-mode model-response .markdown {
+  line-height: 1.95 !important;
+  font-size: 0.97em !important;
+}
+
+body.sr-reading-mode model-response p  { margin-bottom: 1.1em !important; }
+body.sr-reading-mode model-response li { margin-bottom: 0.5em !important; }
